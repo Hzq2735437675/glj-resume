@@ -1,26 +1,746 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>GLJ Resume</title>
-  <link rel="stylesheet" href="css/common.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>龚丽娟 | 新媒体运营专家</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- GSAP Animation Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+  <!-- React & ReactDOM (Development versions for easy debugging, switch to production for live) -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel Standalone (Compiles JSX in browser) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    /* Global Styles */
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      /* JavaScript controls the scroll */
+      height: 100%;
+      width: 100%;
+      background-color: #020617;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      cursor: default;
+    }
+
+    /* Hide scrollbar */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* 3D Transform Utilities */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+
+    .transform-style-3d {
+      transform-style: preserve-3d;
+    }
+
+    .backface-hidden {
+      backface-visibility: hidden;
+    }
+  </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/"
+  }
+}
+</script>
 </head>
 
-<body>
-  <header>
-    <h1>欢迎你 叽叽叽222
+<body
+  class="bg-slate-950 text-white antialiased selection:bg-purple-500 selection:text-white transition-colors duration-1000">
+  <div id="root"></div>
 
-      阿斯顿撒旦撒旦撒
-    </h1>
-  </header>
+  <!-- MAIN APPLICATION SCRIPT -->
+  <script type="text/babel" data-presets="typescript,react">
+    const { useState, useEffect, useRef } = React;
 
-  <main>
-    <p>这是我的个人简历静态站点。内容稍后更新。</p>
-  </main>
+    // =============================================================================
+    // CONFIGURATION
+    // =============================================================================
+    const CONFIG = {
+      name: "龚丽娟",
+      title: "新媒体运营总监 / 爆款制造机",
+      bio: "深耕新媒体领域 5 年，擅长双微一抖小红书的全案运营。不仅懂内容创作，更懂流量算法与用户心理。曾操盘过 3 个百万级大号，单条视频最高播放量破 5000 万。",
 
-  <script src="js/index.js"></script>
+      avatar: {
+        bubbleText: "你好呀 ✨",
+        showGlasses: false,
+      },
+
+      socials: [
+        { name: "小红书", url: "#", label: "娟姐运营笔记" },
+        { name: "微信", url: "#", label: "WeChat: gong_media" },
+        { name: "邮箱", url: "mailto:hi@gong.media", label: "hi@gong.media" },
+      ],
+
+      theme: {
+        background: "bg-slate-950",
+        accentPrimary: "text-purple-400",
+        accentSecondary: "text-fuchsia-400",
+        accentHighlight: "text-white",
+      },
+
+      stats: [
+        { label: "全网粉丝", value: "300W", suffix: "+" },
+        { label: "累计阅读", value: "1.2", suffix: "亿" },
+        { label: "合作品牌", value: "50", suffix: "+" },
+        { label: "爆款案例", value: "100", suffix: "+" },
+      ],
+
+      services: [
+        { title: "全案策划", desc: "从0到1账号搭建，制定阶段性增长SOP", icon: "🚀" },
+        { title: "内容创作", desc: "脚本/文案/拍摄/剪辑，输出高留存内容", icon: "✍️" },
+        { title: "私域转化", desc: "公域引流私域沉淀，高客单价变现闭环", icon: "💰" },
+        { title: "矩阵打法", desc: "多平台分发策略，最大化品牌曝光声量", icon: "🌐" },
+      ],
+
+      portfolio: [
+        { id: 1, title: "城市CityWalk企划", category: "1.2亿 浏览量", description: "霸榜同城热搜 TOP1，KOC 裂变刷屏级案例。", tags: ["话题策划", "社群裂变"], color: "from-purple-500 to-indigo-600" },
+        { id: 2, title: "国货美妆 0-1 孵化", category: "全网涨粉 80W+", description: "人设打造与剧情短视频输出，首播 GMV 破百万。", tags: ["品牌IP化", "直播场控"], color: "from-pink-500 to-rose-600" },
+        { id: 3, title: "职场人图鉴条漫", category: "10W+ 爆文 x5", description: "精准洞察痛点，平均涨粉率 8%，高用户粘性。", tags: ["脚本撰写", "用户增长"], color: "from-blue-500 to-cyan-600" },
+        { id: 4, title: "私域流量增长战役", category: "转化率 +20%", description: "资料包引流 + 企微自动承接，获客 5000+。", tags: ["私域SOP", "自动化营销"], color: "from-orange-500 to-amber-600" },
+        { id: 5, title: "春节年货节大促", category: "GMV 500W+", description: "整合营销方案，达人矩阵带货。", tags: ["电商运营", "活动策划"], color: "from-red-500 to-red-700" },
+        { id: 6, title: "科技新品发布会", category: "直播观看 200W", description: "预热+直播+长尾分发，全链路营销。", tags: ["事件营销", "科技数码"], color: "from-cyan-500 to-blue-700" },
+        { id: 7, title: "宠物IP联名活动", category: "互动量 50W+", description: "跨界联名，萌宠经济精准收割。", tags: ["跨界营销", "创意策划"], color: "from-emerald-400 to-green-600" },
+        { id: 8, title: "知识付费训练营", category: "学员 1000+", description: "个人IP变现，高客单价课程转化。", tags: ["知识付费", "社群运营"], color: "from-yellow-500 to-orange-600" },
+      ],
+
+      hobbies: [
+        { name: "胶片摄影", emoji: "📸", desc: "定格光影温度", colSpan: "col-span-2", bg: "bg-stone-800" },
+        { name: "咖啡中毒", emoji: "☕", desc: "续命水", colSpan: "col-span-1", bg: "bg-orange-900/40" },
+        { name: "公路旅行", emoji: "🚗", desc: "永远在路上", colSpan: "col-span-1", bg: "bg-blue-900/40" },
+        { name: "猫咪观察员", emoji: "🐱", desc: "治愈时刻", colSpan: "col-span-2", bg: "bg-pink-900/30" },
+        { name: "黑胶唱片", emoji: "🎵", desc: "复古灵魂", colSpan: "col-span-1", bg: "bg-purple-900/40" },
+        { name: "户外露营", emoji: "⛺", desc: "逃离城市", colSpan: "col-span-1", bg: "bg-green-900/40" },
+        { name: "看展达人", emoji: "🎨", desc: "审美积累", colSpan: "col-span-2", bg: "bg-indigo-900/40" },
+        { name: "深度阅读", emoji: "📚", desc: "精神避难所", colSpan: "col-span-2", bg: "bg-slate-800" },
+      ],
+
+      resume: {
+        experience: [
+          { year: "2024.10 - 至今", role: "新媒体运营专员", company: "星火文化传媒", description: "负责品牌全案策划与执行。入职首月产出 2 条百万播放爆款，独立负责小红书矩阵号从 0 到 1 搭建，月涨粉 3W+。" },
+          { year: "2024.07 - 2024.09", role: "内容运营实习生", company: "字节跳动", description: "参与抖音本地生活业务 S 级大促。协助达人对接与脚本优化，累计跟进 50+ 场直播，GMV 达成率 120%。" },
+          { year: "2020.09 - 2024.06", role: "广告学 (本科)", company: "中国传媒大学", description: "主修新媒体概论、品牌管理。在校期间运营校园公众号粉丝破 5W，获全国大学生广告艺术大赛二等奖。" }
+        ],
+        skills: ["爆款文案", "短视频编导", "数据分析", "全案策划", "私域运营", "AIGC创作"]
+      }
+    };
+
+    // =============================================================================
+    // COMPONENT: Cursor Glow
+    // =============================================================================
+    const CursorGlow = () => {
+      const glowRef = useRef(null);
+
+      useEffect(() => {
+        const glow = glowRef.current;
+        if (!glow) return;
+
+        const moveCursor = (e) => {
+          gsap.to(glow, {
+            x: e.clientX,
+            y: e.clientY,
+            duration: 0.8,
+            ease: "power2.out",
+          });
+        };
+
+        window.addEventListener('mousemove', moveCursor);
+        return () => window.removeEventListener('mousemove', moveCursor);
+      }, []);
+
+      return (
+        <div
+          ref={glowRef}
+          className="fixed top-0 left-0 w-[40rem] h-[40rem] bg-indigo-500 rounded-full opacity-10 pointer-events-none mix-blend-screen filter blur-[80px] z-50 transform -translate-x-1/2 -translate-y-1/2"
+          style={{ willChange: 'transform' }}
+        />
+      );
+    };
+
+    // =============================================================================
+    // COMPONENT: Avatar (SVG)
+    // =============================================================================
+    const Avatar = () => {
+      const containerRef = useRef(null);
+
+      useEffect(() => {
+        const ctx = gsap.context(() => {
+          // Floating
+          gsap.to(".pixel-art-group", {
+            y: -15,
+            duration: 2,
+            repeat: -1,
+            yoyo: true,
+            ease: "steps(12)"
+          });
+
+          // Blinking
+          const blinkTimeline = gsap.timeline({ repeat: -1, repeatDelay: 3.5 });
+          blinkTimeline
+            .to(".eye-open", { opacity: 0, duration: 0.1, ease: "steps(1)" })
+            .to(".eye-closed", { opacity: 1, duration: 0, ease: "steps(1)" }, "<")
+            .to(".eye-closed", { opacity: 0, duration: 0.1, delay: 0.15, ease: "steps(1)" })
+            .to(".eye-open", { opacity: 1, duration: 0, ease: "steps(1)" }, "<");
+
+        }, containerRef);
+        return () => ctx.revert();
+      }, []);
+
+      return (
+        <div ref={containerRef} className="relative flex justify-center items-center h-full">
+          <div className="absolute top-0 right-0 md:-right-8 transform -translate-y-full mb-8 z-20 pixel-art-group">
+            <div className="bg-white text-slate-900 px-4 py-2 font-mono text-xs md:text-sm border-4 border-slate-900 shadow-[4px_4px_0px_rgba(0,0,0,0.5)] relative">
+              <span className="font-bold">{CONFIG.avatar.bubbleText}</span>
+              <div className="absolute -bottom-3 left-4 w-4 h-4 bg-white border-r-4 border-b-4 border-slate-900 transform rotate-45"></div>
+            </div>
+          </div>
+
+          <div className="pixel-art-group transform scale-[0.6] md:scale-100 origin-center">
+            <svg width="320" height="320" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" shapeRendering="crispEdges">
+              <defs>
+                <style>{`
+                                    .skin { fill: #ffe4e6; }
+                                    .hair-dark { fill: #4c1d95; }
+                                    .hair-light { fill: #8b5cf6; }
+                                    .eye { fill: #1e1b4b; }
+                                    .blush { fill: #fda4af; }
+                                    .mouth { fill: #be123c; }
+                                    .shirt { fill: #f3e8ff; }
+                                    .bg-glow { fill: #a855f7; fill-opacity: 0.2; }
+                                `}</style>
+              </defs>
+              <rect x="2" y="2" width="28" height="28" className="bg-glow" rx="2" />
+              <rect x="4" y="8" width="24" height="20" className="hair-dark" />
+              <rect x="3" y="10" width="2" height="14" className="hair-dark" />
+              <rect x="27" y="10" width="2" height="14" className="hair-dark" />
+              <rect x="13" y="22" width="6" height="4" className="skin" />
+              <rect x="8" y="24" width="16" height="8" className="shirt" />
+              <rect x="6" y="26" width="2" height="6" className="shirt" />
+              <rect x="24" y="26" width="2" height="6" className="shirt" />
+              <rect x="6" y="6" width="20" height="18" className="skin" />
+              <rect x="5" y="10" width="2" height="10" className="skin" />
+              <rect x="25" y="10" width="2" height="10" className="skin" />
+              <rect x="6" y="4" width="20" height="4" className="hair-light" />
+              <rect x="4" y="6" width="4" height="6" className="hair-light" />
+              <rect x="24" y="6" width="4" height="6" className="hair-light" />
+              <rect x="10" y="6" width="2" height="3" className="hair-light" />
+              <rect x="14" y="6" width="4" height="2" className="hair-light" />
+              <rect x="20" y="6" width="2" height="3" className="hair-light" />
+              <g className="eye-open">
+                <rect x="8" y="13" width="4" height="4" className="eye" />
+                <rect x="9" y="13" width="1" height="2" fill="white" />
+                <rect x="20" y="13" width="4" height="4" className="eye" />
+                <rect x="21" y="13" width="1" height="2" fill="white" />
+              </g>
+              <g className="eye-closed" style={{ opacity: 0 }}>
+                <rect x="8" y="15" width="4" height="1" className="eye" />
+                <rect x="20" y="15" width="4" height="1" className="eye" />
+              </g>
+              <rect x="7" y="18" width="3" height="1" className="blush" />
+              <rect x="22" y="18" width="3" height="1" className="blush" />
+              <rect x="14" y="19" width="4" height="1" className="mouth" />
+              <rect x="13" y="18" width="1" height="1" className="mouth" />
+              <rect x="18" y="18" width="1" height="1" className="mouth" />
+              <rect x="2" y="6" width="4" height="4" className="hair-light" />
+              <rect x="26" y="6" width="4" height="4" className="hair-light" />
+            </svg>
+          </div>
+        </div>
+      );
+    };
+
+    // =============================================================================
+    // SECTION: HERO
+    // =============================================================================
+    const Hero = ({ isActive }) => {
+      const textRef = useRef(null);
+
+      useEffect(() => {
+        if (isActive) {
+          const ctx = gsap.context(() => {
+            gsap.from(".hero-content", {
+              y: 50,
+              opacity: 0,
+              duration: 1,
+              stagger: 0.2,
+              ease: "power3.out",
+              delay: 0.2
+            });
+          }, textRef);
+          return () => ctx.revert();
+        }
+      }, [isActive]);
+
+      return (
+        <section className="h-screen w-full snap-start flex items-center justify-center relative overflow-hidden px-4 md:px-10">
+          <div ref={textRef} className="container mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+            <div className="hero-content order-2 md:order-1 space-y-6 text-center md:text-left z-10">
+              <div><h2 className={`text-2xl md:text-3xl font-bold tracking-wide ${CONFIG.theme.accentPrimary}`}>你好，我是</h2></div>
+              <div>
+                <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-rose-200 via-purple-200 to-orange-200 drop-shadow-sm leading-tight">
+                  {CONFIG.name}
+                </h1>
+              </div>
+              <div>
+                <p className="text-xl md:text-2xl text-slate-300 max-w-lg mx-auto md:mx-0 font-light leading-relaxed">
+                  {CONFIG.title}
+                </p>
+              </div>
+              <div className="pt-6 flex gap-4 justify-center md:justify-start flex-wrap">
+                {CONFIG.socials.map((social) => (
+                  <a key={social.name} href={social.url} className={`px-6 py-3 rounded-full border border-slate-700 bg-slate-800/50 hover:bg-rose-900/50 hover:border-rose-500 transition-all duration-300 hover:scale-105 shadow-lg ${CONFIG.theme.accentHighlight}`}>
+                    {social.name}
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div className="hero-content order-1 md:order-2 flex justify-center relative z-10">
+              <div className="absolute inset-0 bg-gradient-to-tr from-rose-500/20 to-purple-500/20 rounded-full blur-3xl transform scale-75 animate-pulse" />
+              <Avatar />
+            </div>
+          </div>
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce opacity-50 flex flex-col items-center gap-2">
+            <span className="text-xs tracking-widest uppercase text-slate-400">下滑查看作品</span>
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+          </div>
+        </section>
+      );
+    };
+
+    // =============================================================================
+    // SECTION: STATS (Breathing Animation)
+    // =============================================================================
+    const Stats = ({ isActive }) => {
+      const containerRef = useRef(null);
+
+      useEffect(() => {
+        if (!isActive) return;
+
+        const ctx = gsap.context(() => {
+          gsap.set(".stat-wrapper", { y: 60, opacity: 0 });
+          const tl = gsap.timeline();
+
+          // 1. Entrance
+          tl.to(".stat-wrapper", { y: 0, opacity: 1, duration: 0.8, stagger: 0.15, ease: "back.out(1.7)" });
+
+          // 2. Count Numbers
+          gsap.utils.toArray(".stat-number").forEach((el) => {
+            const endValue = parseFloat(el.getAttribute("data-value"));
+            gsap.fromTo(el,
+              { innerText: 0 },
+              { innerText: endValue, duration: 2.0, snap: { innerText: 0.1 }, ease: "power2.out", onUpdate: function () { el.innerText = Math.ceil(this.targets()[0].innerText * 10) / 10; } }
+            );
+          });
+
+          // 3. Idle Float
+          tl.add("idle");
+          tl.to(".stat-wrapper", {
+            y: -8, duration: 2.5,
+            stagger: { each: 0.2, yoyo: true, repeat: -1 },
+            ease: "sine.inOut"
+          }, "idle-=0.4");
+        }, containerRef);
+
+        return () => ctx.kill();
+      }, [isActive]);
+
+      return (
+        <section ref={containerRef} className="w-full h-full flex flex-col items-center justify-center p-6 md:p-12 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
+          <div className="z-10 text-center mb-16 max-w-3xl">
+            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6">数说<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">新媒体</span>影响力</h2>
+            <p className="text-lg text-slate-400">数据是不会说谎的。在过去的职业生涯中，我用实打实的数据证明了内容的力量。</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 w-full max-w-6xl z-10">
+            {CONFIG.stats.map((stat, index) => (
+              <div key={index} className="stat-wrapper opacity-0">
+                <div className="flex flex-col items-center p-6 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 hover:scale-105 group cursor-default shadow-lg">
+                  <div className="text-4xl md:text-6xl font-black text-white mb-2 group-hover:text-purple-300 transition-colors duration-300">
+                    <span className="stat-number" data-value={stat.value.replace(/[^0-9.]/g, '')}>0</span>
+                    <span className="text-2xl md:text-3xl text-purple-400 ml-1">{stat.suffix}</span>
+                  </div>
+                  <div className="text-sm md:text-base font-bold text-slate-400 tracking-widest uppercase mt-2 border-t border-white/10 pt-4 w-full text-center group-hover:border-purple-500/30 transition-colors">{stat.label}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    };
+
+    // =============================================================================
+    // SECTION: SERVICES (3D Flip & Float)
+    // =============================================================================
+    const Services = ({ isActive }) => {
+      const containerRef = useRef(null);
+
+      useEffect(() => {
+        if (!isActive) return;
+
+        const ctx = gsap.context(() => {
+          gsap.set(".service-title", { x: -50, opacity: 0 });
+          gsap.set(".service-wrapper", { scale: 0, opacity: 0, z: -500, rotationX: 60, rotationY: 30 });
+          const tl = gsap.timeline();
+
+          tl.to(".service-title", { x: 0, opacity: 1, duration: 1.0, ease: "power3.out" });
+
+          // 3D Entrance
+          tl.to(".service-wrapper", {
+            scale: 1, opacity: 1, z: 0, rotationX: 0, rotationY: 0,
+            duration: 1.4, stagger: 0.1, ease: "elastic.out(1, 0.5)",
+          }, "-=0.8");
+
+          // Continuous Float
+          tl.add("float");
+          tl.to(".service-wrapper:nth-child(odd)", { y: -10, rotation: -1, duration: 3, repeat: -1, yoyo: true, ease: "sine.inOut" }, "float-=0.5");
+          tl.to(".service-wrapper:nth-child(even)", { y: 10, rotation: 1, duration: 3.5, repeat: -1, yoyo: true, ease: "sine.inOut" }, "float-=0.5");
+        }, containerRef);
+        return () => ctx.kill();
+      }, [isActive]);
+
+      return (
+        <section ref={containerRef} className="w-full h-full flex flex-col md:flex-row items-center justify-center p-6 md:p-20 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-[30rem] h-[30rem] bg-indigo-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-[20rem] h-[20rem] bg-purple-600/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3 pointer-events-none animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="service-title opacity-0 md:w-1/3 mb-12 md:mb-0 md:pr-12 text-center md:text-left z-10">
+            <h2 className="text-5xl md:text-7xl font-black text-white mb-6 leading-none tracking-tighter">增长<br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">黑客思维</span></h2>
+            <div className="h-1.5 w-20 bg-indigo-500 rounded-full mb-8 mx-auto md:mx-0"></div>
+            <h3 className="text-2xl font-bold text-white mb-4">全链路运营心法</h3>
+            <p className="text-slate-400 text-base leading-relaxed">不只是写爆款，更是构建品牌护城河。<br />从流量获取到私域沉淀，提供一站式解决方案。</p>
+          </div>
+          <div className="md:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-5 w-full max-w-4xl z-10 perspective-1000">
+            {CONFIG.services.map((service, idx) => (
+              <div key={idx} className="service-wrapper opacity-0 transform-style-3d will-change-transform">
+                <div className="bg-gradient-to-br from-slate-800/80 to-slate-900/80 backdrop-blur-xl p-8 rounded-[2rem] border border-white/5 shadow-xl hover:border-indigo-500/50 transition-all duration-300 group cursor-default hover:shadow-[0_10px_40px_-10px_rgba(99,102,241,0.3)] hover:-translate-y-1">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center text-2xl group-hover:scale-110 group-hover:rotate-[360deg] transition-transform duration-700 ease-spring">{service.icon}</div>
+                    <h3 className="text-xl font-bold text-white group-hover:text-indigo-300 transition-colors">{service.title}</h3>
+                  </div>
+                  <p className="text-slate-400 text-sm leading-relaxed pl-16 border-l-2 border-white/5 group-hover:border-indigo-500/30 transition-colors">{service.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    };
+
+    // =============================================================================
+    // SECTION: PORTFOLIO (Floating Wrapper)
+    // =============================================================================
+    const Portfolio = ({ isActive }) => {
+      const containerRef = useRef(null);
+
+      useEffect(() => {
+        if (!isActive) return;
+
+        const ctx = gsap.context(() => {
+          gsap.set(".portfolio-header", { y: -50, opacity: 0 });
+          gsap.set(".portfolio-wrapper", { scale: 0, opacity: 0 });
+          const tl = gsap.timeline();
+
+          tl.to(".portfolio-header", { y: 0, opacity: 1, duration: 0.8, ease: "back.out(1.7)" });
+          tl.to(".portfolio-wrapper", { scale: 1, opacity: 1, duration: 1.0, stagger: { amount: 0.6, grid: "auto", from: "center" }, ease: "back.out(1.2)" }, "-=0.4");
+
+          // Floating
+          tl.addLabel("startFloating");
+          tl.to(".portfolio-wrapper:nth-child(odd)", { y: -10, duration: 2.5, repeat: -1, yoyo: true, ease: "sine.inOut" }, "startFloating");
+          tl.to(".portfolio-wrapper:nth-child(even)", { y: 10, duration: 2.5, repeat: -1, yoyo: true, ease: "sine.inOut" }, "startFloating");
+        }, containerRef);
+
+        return () => ctx.kill();
+      }, [isActive]);
+
+      return (
+        <section ref={containerRef} className="w-full h-full relative flex flex-col items-center justify-center p-4 md:p-8 overflow-hidden bg-slate-900/50">
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] mix-blend-screen animate-pulse"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px] mix-blend-screen"></div>
+          </div>
+          <div className="portfolio-header opacity-0 text-center mb-10 relative z-10">
+            <h2 className="text-4xl md:text-6xl font-black text-white mb-2 tracking-tighter">爆款案例展示</h2>
+            <div className="h-1 w-24 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto rounded-full"></div>
+            <p className="text-slate-400 mt-4 max-w-lg mx-auto">从策略到执行，用数据定义影响力</p>
+          </div>
+          <div className="portfolio-grid grid grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-7xl px-4">
+            {CONFIG.portfolio.map((project) => (
+              <div key={project.id} className="portfolio-wrapper opacity-0 relative h-48 md:h-64 cursor-pointer perspective-1000">
+                <div className={`w-full h-full rounded-2xl bg-gradient-to-br ${project.color} p-4 md:p-5 flex flex-col justify-between relative overflow-hidden transition-transform duration-300 hover:scale-105 hover:z-50 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)] group`}>
+                  <div className="absolute inset-0 opacity-20 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay"></div>
+                  <div className="relative z-10 flex justify-between items-start">
+                    <span className="inline-block px-2 py-1 rounded-md bg-black/30 backdrop-blur-md text-white/90 text-[10px] font-bold tracking-wider border border-white/10 group-hover:bg-white group-hover:text-black transition-colors">{project.category}</span>
+                    <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                  </div>
+                  <div className="relative z-10 mt-auto mb-4">
+                    <h3 className="text-lg md:text-xl font-bold text-white leading-tight drop-shadow-md group-hover:tracking-wide transition-all">{project.title}</h3>
+                    <p className="text-[10px] md:text-xs text-white/80 mt-1 line-clamp-2 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0">{project.description}</p>
+                  </div>
+                  <div className="relative z-10 flex gap-1 flex-wrap">
+                    {project.tags.map(tag => (<span key={tag} className="text-[9px] text-white/90 bg-white/20 px-1.5 py-0.5 rounded border border-white/10">#{tag}</span>))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      );
+    };
+
+    // =============================================================================
+    // SECTION: HOBBIES (Zero Gravity)
+    // =============================================================================
+    const Hobbies = ({ isActive }) => {
+      const containerRef = useRef(null);
+
+      useEffect(() => {
+        if (!isActive) return;
+
+        const ctx = gsap.context(() => {
+          gsap.fromTo(".hobby-title", { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power3.out" });
+
+          // Chaotic Entrance
+          gsap.fromTo(".hobby-wrapper",
+            { x: () => Math.random() * 400 - 200, y: () => Math.random() * 400 + 200, rotation: () => Math.random() * 90 - 45, opacity: 0, scale: 0 },
+            { x: 0, y: 0, rotation: 0, scale: 1, opacity: 1, duration: 1.2, stagger: 0.05, ease: "elastic.out(1, 0.75)" }
+          );
+
+          // Zero Gravity Float
+          gsap.utils.toArray(".hobby-wrapper").forEach((el) => {
+            gsap.to(el, {
+              y: 5 + Math.random() * 10,
+              rotation: 1 + Math.random() * 3,
+              duration: 2 + Math.random() * 2,
+              repeat: -1, yoyo: true, ease: "sine.inOut",
+              delay: 1.2 + Math.random()
+            });
+          });
+        }, containerRef);
+
+        return () => ctx.kill();
+      }, [isActive]);
+
+      return (
+        <section ref={containerRef} className="w-full h-full flex flex-col items-center justify-center p-4 md:p-8 relative bg-zinc-950 overflow-hidden">
+          <div className="hobby-title opacity-0 z-20 text-center mb-6 md:mb-10 relative shrink-0">
+            <h2 className="text-4xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-zinc-700 tracking-tighter cursor-default">INSPIRATION</h2>
+            <div className="absolute -inset-10 bg-yellow-500/20 blur-[80px] rounded-full pointer-events-none mix-blend-screen"></div>
+          </div>
+          <div className="w-full max-w-6xl flex-1 min-h-0 relative z-10 overflow-visible">
+            <div className="h-full grid grid-cols-2 md:grid-cols-4 grid-rows-4 md:grid-rows-3 gap-3 md:gap-4">
+              {CONFIG.hobbies.map((hobby, idx) => (
+                <div key={idx} className={`hobby-wrapper opacity-0 ${hobby.colSpan} relative`}>
+                  <div className={`w-full h-full rounded-2xl md:rounded-3xl p-4 flex flex-col items-center justify-center ${hobby.bg} border border-white/5 transition-all duration-300 hover:z-50 hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] group cursor-default`}>
+                    <div className="text-4xl md:text-6xl mb-2 md:mb-4 transform transition-transform duration-500 group-hover:scale-125 group-hover:rotate-12 filter drop-shadow-lg">{hobby.emoji}</div>
+                    <h3 className="text-sm md:text-lg font-bold text-white relative z-10 group-hover:text-yellow-400 transition-colors text-center leading-tight">{hobby.name}</h3>
+                    <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-2xl md:rounded-3xl transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/90 backdrop-blur-md rounded-2xl md:rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-300 p-2 text-center">
+                      <span className="text-yellow-400 font-mono font-bold tracking-widest uppercase text-xs md:text-sm">{hobby.desc}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    // =============================================================================
+    // SECTION: RESUME (Swapped & Animated)
+    // =============================================================================
+    const Resume = ({ isActive }) => {
+      const containerRef = useRef(null);
+
+      useEffect(() => {
+        if (!isActive) return;
+
+        const ctx = gsap.context(() => {
+          const tl = gsap.timeline();
+          // Entrance
+          tl.fromTo(".timeline-line", { scaleX: 0 }, { scaleX: 1, duration: 1.5, ease: "power3.out" });
+          tl.fromTo(".timeline-dot", { scale: 0 }, { scale: 1, duration: 0.5, stagger: 0.2, ease: "back.out(2)" }, "-=1");
+          tl.fromTo(".timeline-card-wrapper", { y: (i) => i % 2 === 0 ? 50 : -50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, stagger: 0.2, ease: "power2.out" }, "-=0.8");
+          tl.fromTo(".resume-bio", { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: "power2.out" }, "-=0.5");
+
+          // Continuous: Heartbeat & Float
+          tl.to(".timeline-dot", { scale: 1.2, boxShadow: "0 0 10px rgba(168, 85, 247, 0.5)", duration: 0.8, repeat: -1, yoyo: true, ease: "sine.inOut", stagger: 0.2 }, "-=0.5");
+          tl.to(".timeline-card-wrapper:nth-child(odd)", { y: -5, duration: 3, repeat: -1, yoyo: true, ease: "sine.inOut" }, "-=2");
+          tl.to(".timeline-card-wrapper:nth-child(even)", { y: 5, duration: 3.2, repeat: -1, yoyo: true, ease: "sine.inOut" }, "-=3");
+        }, containerRef);
+
+        return () => ctx.kill();
+      }, [isActive]);
+
+      return (
+        <section ref={containerRef} className="h-full w-full flex flex-col relative overflow-hidden bg-black text-white">
+          {/* TOP: CAREER TIMELINE */}
+          <div className="h-[60%] w-full relative flex items-center justify-center px-4 md:px-10 bg-slate-950">
+            <h3 className="absolute top-8 left-8 text-sm font-bold text-slate-700 uppercase tracking-[0.3em] z-0 select-none">Career Path</h3>
+            <div className="relative w-full max-w-6xl h-64 flex items-center justify-between z-10">
+              <div className="timeline-line absolute left-0 right-0 top-1/2 h-0.5 bg-gradient-to-r from-transparent via-slate-700 to-transparent transform origin-left"></div>
+              {CONFIG.resume.experience.map((job, index) => {
+                const isTop = index % 2 === 0;
+                return (
+                  <div key={index} className="relative flex flex-col items-center flex-1 h-full justify-center group">
+                    <div className="timeline-dot absolute top-1/2 left-1/2 w-3 h-3 bg-slate-950 border-2 border-slate-500 rounded-full transform -translate-x-1/2 -translate-y-1/2 z-20 hover:bg-purple-500 hover:border-purple-500 transition-colors"></div>
+                    <div className={`absolute left-1/2 w-px bg-slate-800 group-hover:bg-purple-500/50 transition-colors h-1/2 z-0 ${isTop ? 'bottom-1/2 origin-bottom scale-y-100' : 'top-1/2 origin-top scale-y-100'}`}></div>
+                    <div className={`timeline-card-wrapper absolute w-60 md:w-72 z-30 ${isTop ? 'bottom-[60%]' : 'top-[60%]'}`}>
+                      <div className="p-5 bg-zinc-900/80 backdrop-blur-sm border border-white/5 rounded-xl hover:border-purple-500/50 hover:bg-zinc-900 transition-all duration-300 shadow-xl cursor-default hover:scale-105">
+                        <div className="flex justify-between items-center mb-2"><span className="text-xs font-mono text-slate-500 group-hover:text-purple-400 transition-colors">{job.year}</span></div>
+                        <h4 className="font-bold text-white text-base leading-tight mb-1">{job.role}</h4>
+                        <div className="text-xs text-slate-400 font-medium mb-3">{job.company}</div>
+                        <p className="text-xs text-slate-500 line-clamp-3 group-hover:text-slate-300 transition-colors leading-relaxed">{job.description}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          {/* BOTTOM: ABOUT ME */}
+          <div className="resume-bio opacity-0 h-[40%] w-full bg-gradient-to-b from-slate-950 via-slate-900 to-black flex items-center justify-center px-6 py-10 relative z-20 border-t border-white/5">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 blur-[80px] rounded-full pointer-events-none animate-pulse"></div>
+            <div className="max-w-5xl w-full flex flex-col md:flex-row gap-12 items-center">
+              <div className="shrink-0 text-center md:text-right">
+                <div className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-600 tracking-tighter mb-2">ABOUT</div>
+                <div className="text-xl font-mono text-purple-400 tracking-widest uppercase">The Creator</div>
+              </div>
+              <div className="flex-1 text-center md:text-left border-l-0 md:border-l-2 border-white/10 md:pl-12">
+                <p className="text-slate-300 leading-relaxed text-base md:text-lg mb-6 font-light">{CONFIG.bio}</p>
+                <div className="flex flex-wrap justify-center md:justify-start gap-3 mb-8">
+                  {CONFIG.resume.skills.map((skill, index) => (
+                    <span key={index} className="px-3 py-1 bg-white/5 rounded-md text-xs font-bold text-slate-300 border border-white/10 hover:border-purple-500 hover:text-white hover:bg-purple-600/20 transition-all cursor-default hover:-translate-y-1">{skill}</span>
+                  ))}
+                </div>
+                <a href={CONFIG.socials[1].url} className="inline-flex items-center gap-2 text-purple-400 hover:text-purple-300 font-bold transition-colors group">
+                  <span className="border-b-2 border-purple-500 group-hover:border-purple-300 pb-0.5">Let's Talk</span>
+                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    // =============================================================================
+    // MAIN APP
+    // =============================================================================
+    const App = () => {
+      const wrapperRef = useRef(null);
+      const [activeSection, setActiveSection] = useState(0);
+      const currentSectionRef = useRef(0);
+      const isAnimatingRef = useRef(false);
+      const touchStartY = useRef(0);
+
+      const sections = [
+        { component: Hero, id: 'hero', bg: '#020617' },
+        { component: Stats, id: 'stats', bg: '#2e1065' },
+        { component: Services, id: 'services', bg: '#1e1b4b' },
+        { component: Portfolio, id: 'portfolio', bg: '#0f172a' },
+        { component: Hobbies, id: 'hobbies', bg: '#18181b' },
+        { component: Resume, id: 'resume', bg: '#000000' },
+      ];
+      const sectionsCount = sections.length;
+
+      useEffect(() => {
+        const scrollToSection = (index) => {
+          if (index < 0 || index >= sectionsCount) return;
+          if (isAnimatingRef.current) return;
+
+          isAnimatingRef.current = true;
+          currentSectionRef.current = index;
+          setActiveSection(index);
+
+          const ctx = gsap.context(() => {
+            gsap.to(wrapperRef.current, {
+              y: -(index * 100) + "vh",
+              duration: 1.0,
+              ease: "power3.inOut",
+              onComplete: () => { setTimeout(() => { isAnimatingRef.current = false; }, 100); }
+            });
+            gsap.to("body", { backgroundColor: sections[index].bg, duration: 1.0, ease: "power1.inOut" });
+          });
+          return () => ctx.revert();
+        };
+
+        const handleWheel = (e) => {
+          e.preventDefault();
+          if (isAnimatingRef.current) return;
+          if (Math.abs(e.deltaY) > 20) {
+            const direction = e.deltaY > 0 ? 1 : -1;
+            scrollToSection(currentSectionRef.current + direction);
+          }
+        };
+        const handleTouchStart = (e) => { touchStartY.current = e.touches[0].clientY; };
+        const handleTouchEnd = (e) => {
+          if (isAnimatingRef.current) return;
+          const touchEndY = e.changedTouches[0].clientY;
+          const diff = touchStartY.current - touchEndY;
+          if (Math.abs(diff) > 50) {
+            const direction = diff > 0 ? 1 : -1;
+            scrollToSection(currentSectionRef.current + direction);
+          }
+        };
+        const handleKeyDown = (e) => {
+          if (e.key === 'ArrowDown') scrollToSection(currentSectionRef.current + 1);
+          if (e.key === 'ArrowUp') scrollToSection(currentSectionRef.current - 1);
+        };
+
+        window.addEventListener('wheel', handleWheel, { passive: false });
+        window.addEventListener('touchstart', handleTouchStart, { passive: true });
+        window.addEventListener('touchend', handleTouchEnd, { passive: true });
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+          window.removeEventListener('wheel', handleWheel);
+          window.removeEventListener('touchstart', handleTouchStart);
+          window.removeEventListener('touchend', handleTouchEnd);
+          window.removeEventListener('keydown', handleKeyDown);
+        };
+      }, [sectionsCount]);
+
+      return (
+        <div className={`h-screen w-screen overflow-hidden ${CONFIG.theme.background}`}>
+          <CursorGlow />
+          <div ref={wrapperRef} className="w-full flex flex-col will-change-transform" style={{ height: `${sectionsCount * 100}vh` }}>
+            {sections.map((Section, idx) => (
+              <div key={Section.id} className="h-[100vh] w-full relative z-10">
+                <Section.component isActive={activeSection === idx} />
+              </div>
+            ))}
+          </div>
+          <div className="fixed right-6 md:right-8 top-1/2 transform -translate-y-1/2 flex flex-col gap-4 z-50">
+            {sections.map((_, idx) => (
+              <div key={idx} className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-500 border border-white/20 relative group ${activeSection === idx ? 'bg-purple-500 scale-125 shadow-[0_0_15px_#a855f7]' : 'bg-transparent hover:bg-white/20'}`}></div>
+            ))}
+          </div>
+        </div>
+      );
+    };
+
+    // Render
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
 </body>
 
 </html>
