@@ -1,2 +1,1 @@
-# glj-resume
-Gong Lijuan's resume 222
+这是龚丽娟的个人简历
