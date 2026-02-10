@@ -1,2 +1,2 @@
 # glj-resume
-Gong Lijuan's resum222e
+Gong Lijuan's resume 222
